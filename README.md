@@ -1,8 +1,8 @@
 # VVV Custom site template (develop)
-For when you just need a simple dev site
+For when you just need a dev site running wordpress develop
 
 ## Overview
-This template will allow you to create a WordPress dev environment  runninr wordpress src using only `vvv-custom.yml`.
+This template will allow you to create a WordPress dev environment running wordpress develop using only `vvv-custom.yml`.
 
 The supported environments are:
 - A single site
@@ -15,7 +15,7 @@ The supported environments are:
 
 ```
 my-site:
-  repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template
+  repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template-develop
   hosts:
     - my-site.dev
 ```
@@ -30,7 +30,7 @@ my-site:
 
 ```
 my-site:
-  repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template
+  repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template-develop
   hosts:
     - multisite.dev
     - site1.multisite.dev
