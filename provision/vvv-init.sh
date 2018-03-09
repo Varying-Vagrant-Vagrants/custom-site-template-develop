@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-DOMAIN=`get_primary_host "${VVV_SITE_NAME}".dev`
+DOMAIN=`get_primary_host "${VVV_SITE_NAME}".test`
 DOMAINS=`get_hosts "${DOMAIN}"`
 SITE_TITLE=`get_config_value 'site_title' "${DOMAIN}"`
 WP_TYPE=`get_config_value 'wp_type' "single"`
@@ -27,9 +27,9 @@ if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/src/wp-load.php" ]]; then
 else
   cd "${VVV_PATH_TO_SITE}/public_html"
   echo "Updating WordPress trunk. See https://develop.svn.wordpress.org/trunk"
-  svn up
+  noroot svn up
   noroot npm install &>/dev/null
-  grunt
+  noroot grunt
 fi
 
 if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/src/wp-config.php" ]]; then
@@ -52,18 +52,17 @@ if ! $(noroot wp core is-installed); then
     INSTALL_COMMAND="install"
   fi
 
-  noroot wp core ${INSTALL_COMMAND} --url="${DOMAIN}" --quiet --title="${SITE_TITLE}" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
+  noroot wp core ${INSTALL_COMMAND} --url="${DOMAIN}" --quiet --title="${SITE_TITLE}" --admin_name=admin --admin_email="admin@local.test" --admin_password="password"
 fi
 
 if [[ ! -d "${VVV_PATH_TO_SITE}/public_html/build" ]]; then
   echo "Initializing grunt... This may take a few moments."
   cd "${VVV_PATH_TO_SITE}/public_html/"
-  grunt
+  noroot grunt
+  echo "Grunt initialized."
 fi
 
-mkdir -p "${VVV_PATH_TO_SITE}/public_html/src/wp-content/mu-plugins" "${VVV_PATH_TO_SITE}/public_html/build/wp-content/mu-plugins"
-ln -sf "${VVV_PATH_TO_SITE}/provision/vvv.php" "${VVV_PATH_TO_SITE}/public_html/src/wp-content/mu-plugins/vvv.php"
-ln -sf "${VVV_PATH_TO_SITE}/provision/vvv.php" "${VVV_PATH_TO_SITE}/public_html/build/wp-content/mu-plugins/vvv.php"
+noroot mkdir -p "${VVV_PATH_TO_SITE}/public_html/src/wp-content/mu-plugins" "${VVV_PATH_TO_SITE}/public_html/build/wp-content/mu-plugins"
 
 cp -f "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf.tmpl" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"
 sed -i "s#{{DOMAINS_HERE}}#${DOMAINS}#" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"
