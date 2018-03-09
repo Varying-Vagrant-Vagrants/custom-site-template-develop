@@ -17,14 +17,15 @@ The supported environments are:
 my-site:
   repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template-develop
   hosts:
-    - my-site.dev
+    - my-site.test
 ```
-| Setting    | Value       |
-|------------|-------------|
-| Domain     | my-site.dev |
-| Site Title | my-site.dev |
-| DB Name    | my-site     |
-| Site Type  | Single      |
+
+| Setting    | Value        |
+|------------|--------------|
+| Domain     | my-site.test |
+| Site Title | my-site.test |
+| DB Name    | my-site      |
+| Site Type  | Single       |
 
 ### WordPress Multisite with Subdomains:
 
@@ -40,8 +41,8 @@ my-site:
 ```
 | Setting    | Value               |
 |------------|---------------------|
-| Domain     | multisite.dev       |
-| Site Title | multisite.dev       |
+| Domain     | multisite.test      |
+| Site Title | multisite.test      |
 | DB Name    | my-site             |
 | Site Type  | Subdomain Multisite |
 
@@ -49,9 +50,9 @@ my-site:
 
 ```
 hosts:
-    - foo.dev
-    - bar.dev
-    - baz.dev
+    - foo.test
+    - bar.test
+    - baz.test
 ```
 Defines the domains and hosts for VVV to listen on. 
 The first domain in this list is your sites primary domain.
