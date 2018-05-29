@@ -33,9 +33,9 @@ my-site:
 my-site:
   repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template-develop
   hosts:
-    - multisite.dev
-    - site1.multisite.dev
-    - site2.multisite.dev
+    - multisite.test
+    - site1.multisite.test
+    - site2.multisite.test
   custom:
     wp_type: subdomain
 ```
