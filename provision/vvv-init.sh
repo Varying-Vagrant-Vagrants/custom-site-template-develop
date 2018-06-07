@@ -32,13 +32,15 @@ else
   noroot grunt
 fi
 
-if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/src/wp-config.php" ]]; then
+if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/wp-config.php" ]]; then
   cd "${VVV_PATH_TO_SITE}/public_html"
   echo "Configuring WordPress trunk..."
   noroot wp core config --dbname="${DB_NAME}" --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
 define( 'WP_DEBUG', true );
 define( 'SCRIPT_DEBUG', true );
 PHP
+  
+  mv "${VVV_PATH_TO_SITE}/public_html/src/wp-config.php" "${VVV_PATH_TO_SITE}/public_html/wp-config.php"
 fi
 
 if ! $(noroot wp core is-installed); then
