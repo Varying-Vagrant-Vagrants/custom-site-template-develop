@@ -35,7 +35,7 @@ fi
 if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/wp-config.php" ]]; then
   cd "${VVV_PATH_TO_SITE}/public_html"
   echo "Configuring WordPress trunk..."
-  noroot wp core config --dbname="${DB_NAME}" --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
+  noroot wp core config --dbname="${DB_NAME}" --dbuser=wp --dbpass=wp --quiet --path="${VVV_PATH_TO_SITE}/public_html/src" --extra-php <<PHP
 define( 'WP_DEBUG', true );
 define( 'SCRIPT_DEBUG', true );
 PHP
@@ -43,7 +43,7 @@ PHP
   mv "${VVV_PATH_TO_SITE}/public_html/src/wp-config.php" "${VVV_PATH_TO_SITE}/public_html/wp-config.php"
 fi
 
-if ! $(noroot wp core is-installed); then
+if ! $(noroot wp core is-installed --path="${VVV_PATH_TO_SITE}/public_html/src"); then
   cd ${VVV_PATH_TO_SITE}
   echo "Installing WordPress trunk..."
 
@@ -55,7 +55,7 @@ if ! $(noroot wp core is-installed); then
     INSTALL_COMMAND="install"
   fi
 
-  noroot wp core ${INSTALL_COMMAND} --url="${DOMAIN}" --quiet --title="${SITE_TITLE}" --admin_name=admin --admin_email="admin@local.test" --admin_password="password"
+  noroot wp core ${INSTALL_COMMAND} --url="${DOMAIN}" --quiet --title="${SITE_TITLE}" --admin_name=admin --admin_email="admin@local.test" --admin_password="password" --path="${VVV_PATH_TO_SITE}/public_html/src"
 fi
 
 if [[ ! -d "${VVV_PATH_TO_SITE}/public_html/build" ]]; then
