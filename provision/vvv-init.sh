@@ -27,7 +27,15 @@ if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/src/wp-load.php" ]]; then
 else
   cd "${VVV_PATH_TO_SITE}/public_html"
   echo "Updating WordPress trunk. See https://develop.svn.wordpress.org/trunk"
-  noroot svn up
+  if [[ -e .svn ]]; then
+    noroot svn up
+  else
+    if [[ $(noroot git rev-parse --abbrev-ref HEAD) == 'master' ]]; then
+      noroot git pull --no-edit git://develop.git.wordpress.org/ master
+    else
+      echo "Skip auto git pull on develop.git.wordpress.org since not on master branch"
+    fi
+  fi
   noroot npm install &>/dev/null
   noroot grunt
 fi
