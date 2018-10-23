@@ -1,10 +1,15 @@
-# VVV Custom site template (develop)
-For when you just need a dev site running wordpress develop
+# VVV Custom site template (WP Core develop)
+
+For when you just need a dev site running wordpress develop. Great for contributor days, Trac tickets, etc
+
+For general WP work such as theme building or plugin development, use the normal site template instead
 
 ## Overview
-This template will allow you to create a WordPress dev environment running wordpress develop using only `vvv-custom.yml`.
+
+This template will allow you to create a WordPress core dev environment running wordpress trunk using only `vvv-custom.yml`.
 
 The supported environments are:
+
 - A single site
 - A subdomain multisite
 - A subdirectory multisite
