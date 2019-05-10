@@ -66,12 +66,12 @@ if ! $(noroot wp core is-installed --path="${VVV_PATH_TO_SITE}/public_html/src")
 fi
 
 if [[ ! -d "${VVV_PATH_TO_SITE}/public_html" ]]; then
-  cd "${VVV_PATH_TO_SITE}/public_html"
-  if [[ -e './tests/phpunit/data/plugins/wordpress-importer/.svn' ]]; then
-    cd './tests/phpunit/data/plugins/wordpress-importer'
+  cd "${VVV_PATH_TO_SITE}/public_html/tests/phpunit/data/plugins/"
+  if [[ -e 'wordpress-importer/.svn' ]]; then
+    cd 'wordpress-importer'
     noroot svn up
   else
-    noroot svn checkout https://plugins.svn.wordpress.org/wordpress-importer/tags/0.6.3/ tests/phpunit/data/plugins/wordpress-importer
+    noroot svn checkout https://plugins.svn.wordpress.org/wordpress-importer/tags/0.6.3/ wordpress-importer
   fi
   cd ${VVV_PATH_TO_SITE}
 fi
