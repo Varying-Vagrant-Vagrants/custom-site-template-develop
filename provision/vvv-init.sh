@@ -65,6 +65,17 @@ if ! $(noroot wp core is-installed --path="${VVV_PATH_TO_SITE}/public_html/src")
   noroot wp core ${INSTALL_COMMAND} --url="${DOMAIN}" --quiet --title="${SITE_TITLE}" --admin_name=admin --admin_email="admin@local.test" --admin_password="password" --path="${VVV_PATH_TO_SITE}/public_html/src"
 fi
 
+if [[ ! -d "${VVV_PATH_TO_SITE}/public_html" ]]; then
+  cd "${VVV_PATH_TO_SITE}/public_html/tests/phpunit/data/plugins/"
+  if [[ -e 'wordpress-importer/.svn' ]]; then
+    cd 'wordpress-importer'
+    noroot svn up
+  else
+    noroot svn checkout https://plugins.svn.wordpress.org/wordpress-importer/tags/0.6.3/ wordpress-importer
+  fi
+  cd ${VVV_PATH_TO_SITE}
+fi
+
 if [[ ! -d "${VVV_PATH_TO_SITE}/public_html/build" ]]; then
   echo "Initializing grunt... This may take a few moments."
   cd "${VVV_PATH_TO_SITE}/public_html/"
