@@ -67,7 +67,7 @@ fi
 
 if [[ ! -d "${VVV_PATH_TO_SITE}/public_html" ]]; then
   cd "${VVV_PATH_TO_SITE}/public_html"
-  if [[ -e './tests/phpunit/data/plugins/wordpress-importer.svn' ]]; then
+  if [[ -e './tests/phpunit/data/plugins/wordpress-importer/.svn' ]]; then
     cd './tests/phpunit/data/plugins/wordpress-importer'
     noroot svn up
   else
