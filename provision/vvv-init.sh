@@ -25,7 +25,7 @@ if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/src/wp-load.php" ]]; then
   echo "Checking out WordPress trunk. See https://develop.svn.wordpress.org/trunk"
   noroot svn checkout "https://develop.svn.wordpress.org/trunk/" "${VVV_PATH_TO_SITE}/public_html"
   cd "${VVV_PATH_TO_SITE}/public_html"
-  noroot npm install --prefix ./node_modules/
+  noroot npm install --prefix ./node_modules/ ./
 else
   cd "${VVV_PATH_TO_SITE}/public_html"
   echo "Updating WordPress trunk. See https://develop.svn.wordpress.org/trunk"
@@ -40,7 +40,7 @@ else
       echo "Skipped auto git pull on develop.git.wordpress.org since you aren't on the master branch"
     fi
   fi
-  noroot npm install --prefix ./node_modules/ &>/dev/null
+  noroot npm install --prefix ./node_modules/ ./ &>/dev/null
   noroot grunt
 fi
 
