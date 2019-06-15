@@ -21,11 +21,11 @@ noroot touch ${VVV_PATH_TO_SITE}/log/nginx-error.log
 noroot touch ${VVV_PATH_TO_SITE}/log/nginx-access.log
 
 echo "Setting up Node LTS"
-noroot curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-noroot nvm install --lts
-noroot nvm use --lts
+mkdir -p /srv/config/nvm
+noroot curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | NVM_DIR="/srv/config/nvm" bash
+. /srv/config/nvm/nvm.sh
+nvm install --lts
+nvm use --lts
 echo "Node setup complete"
 
 # Install and configure the latest stable version of WordPress
