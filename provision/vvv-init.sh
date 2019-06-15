@@ -20,13 +20,21 @@ noroot mkdir -p ${VVV_PATH_TO_SITE}/log
 noroot touch ${VVV_PATH_TO_SITE}/log/nginx-error.log
 noroot touch ${VVV_PATH_TO_SITE}/log/nginx-access.log
 
+echo "Setting up Node LTS"
+mkdir -p /srv/config/nvm
+noroot curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | NVM_DIR="/srv/config/nvm" bash
+. /srv/config/nvm/nvm.sh
+nvm install --lts
+nvm use --lts
+echo "Node setup complete"
+
 # Install and configure the latest stable version of WordPress
 if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/src/wp-load.php" ]]; then
   echo "Checking out WordPress trunk. See https://develop.svn.wordpress.org/trunk"
   noroot svn checkout "https://develop.svn.wordpress.org/trunk/" "${VVV_PATH_TO_SITE}/public_html"
   cd "${VVV_PATH_TO_SITE}/public_html"
   echo "Running npm install"
-  noroot npm install --prefix ./node_modules/ ./
+  noroot npm install
 else
   cd "${VVV_PATH_TO_SITE}/public_html"
   echo "Updating WordPress trunk. See https://develop.svn.wordpress.org/trunk"
@@ -42,7 +50,7 @@ else
     fi
   fi
   echo "Running npm install"
-  noroot npm install --prefix ./node_modules/ ./ &>/dev/null
+  noroot npm install
   echo "Running grunt"
   noroot grunt
 fi
