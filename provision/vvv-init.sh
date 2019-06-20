@@ -24,8 +24,8 @@ echo "Setting up Node LTS"
 mkdir -p /srv/config/nvm
 noroot curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | NVM_DIR="/srv/config/nvm" bash
 . /srv/config/nvm/nvm.sh
-nvm install --lts
-nvm use --lts
+nvm install 10
+nvm use 10
 echo "Node setup complete"
 
 # Install and configure the latest stable version of WordPress
