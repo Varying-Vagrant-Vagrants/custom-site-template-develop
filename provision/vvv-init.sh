@@ -42,7 +42,11 @@ else
     fi
   fi
   echo "Running npm install"
-  noroot npm install --no-optional
+  noroot npm install --no-optional &> /tmp/dev-npm.txt
+  if [ "$(grep -c "^$1" /tmp/dev-npm.txt)" -ge 1 ]; then
+    rm -rf node_modules
+    noroot npm install --no-optional
+  fi
   echo "Running grunt"
   noroot grunt
 fi
