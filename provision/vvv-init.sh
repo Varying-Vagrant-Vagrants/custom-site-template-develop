@@ -43,6 +43,7 @@ else
   fi
   echo "Running npm install"
   # Grunt can crash because doesn't find a folder, the workaround is remove the node_modules folder and download all the dependencies again.
+  # We create a file with the stderr output of NPM to check if there are errors, if yes we remove the folder and try again npm install.
   noroot npm install --no-optional &> /tmp/dev-npm.txt
   if [ "$(grep -c "^$1" /tmp/dev-npm.txt)" -ge 1 ]; then
     rm -rf node_modules
