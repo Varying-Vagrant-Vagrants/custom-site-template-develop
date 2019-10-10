@@ -54,6 +54,7 @@ else
     noroot npm install --no-optional
   fi
   echo "Running grunt"
+  echo " Check the Grunt/Webpack output for Trunk at VVV/log/provisioners/${date_time}/provisioner-${NAME}-grunt.log"
   noroot grunt > $logfile 2>&1 
 fi
 
@@ -100,6 +101,7 @@ echo "Checking for WordPress build"
 if [[ ! -d "${VVV_PATH_TO_SITE}/public_html/build" ]]; then
   echo "Initializing grunt... This may take a few moments."
   cd "${VVV_PATH_TO_SITE}/public_html/"
+  echo " Check the Grunt/Webpack output for Trunk Build at VVV/log/provisioners/${date_time}/provisioner-${NAME}-grunt.log"
   noroot grunt > $logfile 2>&1 
   echo "Grunt initialized."
 fi
