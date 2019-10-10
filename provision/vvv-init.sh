@@ -20,6 +20,10 @@ noroot mkdir -p ${VVV_PATH_TO_SITE}/log
 noroot touch ${VVV_PATH_TO_SITE}/log/nginx-error.log
 noroot touch ${VVV_PATH_TO_SITE}/log/nginx-access.log
 
+date_time=`cat /vagrant/provisioned_at`
+logfolder="/var/log/provisioners/${date_time}"
+logfile="${logfolder}/provisioner-${NAME}-grunt.log"
+
 # Install and configure the latest stable version of WordPress
 if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/src/wp-load.php" ]]; then
   echo "Checking out WordPress trunk. See https://develop.svn.wordpress.org/trunk"
@@ -50,7 +54,7 @@ else
     noroot npm install --no-optional
   fi
   echo "Running grunt"
-  noroot grunt
+  noroot grunt > $logfile 2>&1 
 fi
 
 if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/wp-config.php" ]]; then
@@ -96,7 +100,7 @@ echo "Checking for WordPress build"
 if [[ ! -d "${VVV_PATH_TO_SITE}/public_html/build" ]]; then
   echo "Initializing grunt... This may take a few moments."
   cd "${VVV_PATH_TO_SITE}/public_html/"
-  noroot grunt
+  noroot grunt > $logfile 2>&1 
   echo "Grunt initialized."
 fi
 echo "Checking mu-plugins folder"
