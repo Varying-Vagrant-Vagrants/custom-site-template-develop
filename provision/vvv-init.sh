@@ -54,7 +54,7 @@ else
     noroot npm install --no-optional
   fi
   echo "Running grunt"
-  echo " Check the Grunt/Webpack output for Trunk at VVV/log/provisioners/${date_time}/provisioner-${NAME}-grunt.log"
+  echo " Check the Grunt/Webpack output for Trunk at VVV/log/provisioners/${date_time}/provisioner-${VVV_SITE_NAME}-grunt.log"
   noroot grunt > $logfile 2>&1 
 fi
 
