@@ -56,6 +56,10 @@ else
   echo "Running grunt"
   echo " Check the Grunt/Webpack output for Trunk at VVV/log/provisioners/${date_time}/provisioner-${VVV_SITE_NAME}-grunt.log"
   noroot grunt > $logfile 2>&1 
+  if [ $? -ne 0 ]; then
+     echo "Grunt exited with an error, last 10 lines of log:"
+     tail -10 $logfile
+  fi
 fi
 
 if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/wp-config.php" ]]; then
