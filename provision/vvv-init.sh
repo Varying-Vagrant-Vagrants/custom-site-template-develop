@@ -22,7 +22,7 @@ noroot touch ${VVV_PATH_TO_SITE}/log/nginx-access.log
 
 date_time=`cat /vagrant/provisioned_at`
 logfolder="/var/log/provisioners/${date_time}"
-logfile="${logfolder}/provisioner-${NAME}-grunt.log"
+logfile="${logfolder}/provisioner-${VVV_SITE_NAME}-grunt.log"
 
 # Install and configure the latest stable version of WordPress
 if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/src/wp-load.php" ]]; then
