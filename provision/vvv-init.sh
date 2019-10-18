@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -eo pipefail
+
 echo "Custom Site Template Develop Provisioner - use this template for WP Core development. For client work, use the custom-site-template instead"
 
 DOMAIN=`get_primary_host "${VVV_SITE_NAME}".test`
