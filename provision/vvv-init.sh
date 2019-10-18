@@ -20,6 +20,9 @@ noroot mkdir -p ${VVV_PATH_TO_SITE}/log
 noroot touch ${VVV_PATH_TO_SITE}/log/nginx-error.log
 noroot touch ${VVV_PATH_TO_SITE}/log/nginx-access.log
 
+echo "Creating public_html folder if it doesn't exist already"
+noroot mkdir -p ${VVV_PATH_TO_SITE}/public_html
+
 date_time=`cat /vagrant/provisioned_at`
 logfolder="/var/log/provisioners/${date_time}"
 logfile="${logfolder}/provisioner-${VVV_SITE_NAME}-grunt.log"
@@ -69,7 +72,7 @@ if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/wp-config.php" ]]; then
 define( 'WP_DEBUG', true );
 define( 'SCRIPT_DEBUG', true );
 PHP
-  
+
   mv "${VVV_PATH_TO_SITE}/public_html/src/wp-config.php" "${VVV_PATH_TO_SITE}/public_html/wp-config.php"
 fi
 
@@ -112,22 +115,13 @@ fi
 echo "Checking mu-plugins folder"
 noroot mkdir -p "${VVV_PATH_TO_SITE}/public_html/src/wp-content/mu-plugins" "${VVV_PATH_TO_SITE}/public_html/build/wp-content/mu-plugins"
 
-echo "Copying Nginx template"
-cp -f "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf.tmpl" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"
-
-echo "Adjusting TLS key values in Nginx template"
-if [ -n "$(type -t is_utility_installed)" ] && [ "$(type -t is_utility_installed)" = function ] && `is_utility_installed core tls-ca`; then
-  VVV_CERT_DIR="/srv/certificates"
-  # On VVV 2.x we don't have a /srv/certificates mount, so switch to /vagrant/certificates
-  codename=$(lsb_release --codename | cut -f2)
-  if [[ $codename == "trusty" ]]; then # VVV 2 uses Ubuntu 14 LTS trusty
-    VVV_CERT_DIR="/vagrant/certificates"
-  fi
-  sed -i "s#{{TLS_CERT}}#ssl_certificate ${VVV_CERT_DIR}/${VVV_SITE_NAME}/dev.crt;#" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"
-  sed -i "s#{{TLS_KEY}}#ssl_certificate_key ${VVV_CERT_DIR}/${VVV_SITE_NAME}/dev.key;#" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"
+echo "Copying the sites Nginx config template"
+if [ -f "${VVV_PATH_TO_SITE}/provision/vvv-nginx-custom.conf" ]; then
+  echo "A vvv-nginx-custom.conf file was found"
+  cp -f "${VVV_PATH_TO_SITE}/provision/vvv-nginx-custom.conf" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"
 else
-    sed -i "s#{{TLS_CERT}}##" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"
-    sed -i "s#{{TLS_KEY}}##" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"
+  echo "Using the default vvv-nginx-default.conf, to customize, create a vvv-nginx-custom.conf"
+  cp -f "${VVV_PATH_TO_SITE}/provision/vvv-nginx-default.conf" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"
 fi
 
 echo "Custom site template develop provisioner completed, WP will be served from the build folder"
