@@ -1,12 +1,12 @@
-# VVV Custom site template (WP Core develop)
+# VVV Custom site template (WP Core development)
 
-For when you just need a dev site running wordpress develop. Great for contributor days, Trac tickets, etc
+For when you just need to work on WordPress Core itself. Great for contributor days, Trac tickets, etc
 
-For general WP work such as theme building or plugin development, use the normal site template instead
+For general WP work such as theme building or plugin development, use the normal site template instead.
 
 ## Overview
 
-This template will allow you to create a WordPress core dev environment running wordpress trunk using only `vvv-custom.yml`.
+This template will allow you to create a WordPress core dev environment running wordpress trunk using only `config/config.yml`.
 
 The supported environments are:
 
@@ -14,11 +14,11 @@ The supported environments are:
 - A subdomain multisite
 - A subdirectory multisite
 
-# Configuration
+## Configuration
 
-### The minimum required configuration:
+### The Minimum Required Configuration
 
-```
+```yaml
 my-site:
   repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template-develop
   hosts:
@@ -32,9 +32,9 @@ my-site:
 | DB Name    | my-site      |
 | Site Type  | Single       |
 
-### WordPress Multisite with Subdomains:
+### WordPress Multisite with Subdomains
 
-```
+```yaml
 my-site:
   repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template-develop
   hosts:
@@ -44,6 +44,7 @@ my-site:
   custom:
     wp_type: subdomain
 ```
+
 | Setting    | Value               |
 |------------|---------------------|
 | Domain     | multisite.test      |
@@ -53,35 +54,36 @@ my-site:
 
 ## Configuration Options
 
-```
+```yaml
 hosts:
     - foo.test
     - bar.test
     - baz.test
 ```
-Defines the domains and hosts for VVV to listen on. 
-The first domain in this list is your sites primary domain.
 
-```
+Defines the domains and hosts for VVV to listen on. The first domain in this list is your sites primary domain.
+
+```yaml
 custom:
     site_title: My Awesome Dev Site
 ```
+
 Defines the site title to be set upon installing WordPress.
 
-```
+```yaml
 custom:
     wp_type: single
 ```
-Defines the type of install you are creating.
-Valid values are:
+
+Defines the type of install you are creating. Valid values are:
+
 - single
 - subdomain
 - subdirectory
 
-```
+```yaml
 custom:
     db_name: super_secet_db_name
 ```
+
 Defines the DB name for the installation.
-
-
