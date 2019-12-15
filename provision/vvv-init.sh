@@ -2,7 +2,7 @@
 
 set -eo pipefail
 
-echo "Custom Site Template Develop Provisioner - use this template for WP Core development. For client work, use the custom-site-template instead"
+echo " * Custom Site Template Develop Provisioner - use this template for WP Core development. For client work, use the custom-site-template instead"
 
 DOMAIN=$(get_primary_host "${VVV_SITE_NAME}".test)
 SITE_TITLE=$(get_config_value 'site_title' "${DOMAIN}")
@@ -22,20 +22,31 @@ noroot mkdir -p "${VVV_PATH_TO_SITE}/log"
 noroot touch "${VVV_PATH_TO_SITE}/log/nginx-error.log"
 noroot touch "${VVV_PATH_TO_SITE}/log/nginx-access.log"
 
-echo "Creating public_html folder if it doesn't exist already"
+echo " * Creating public_html folder if it doesn't exist already"
 noroot mkdir -p "${VVV_PATH_TO_SITE}/public_html"
+
+echo " * Copying the sites Nginx config template"
+if [ -f "${VVV_PATH_TO_SITE}/provision/vvv-nginx-custom.conf" ]; then
+  echo " * A vvv-nginx-custom.conf file was found"
+  cp -f "${VVV_PATH_TO_SITE}/provision/vvv-nginx-custom.conf" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"
+else
+  echo " * Using the default vvv-nginx-default.conf, to customize, create a vvv-nginx-custom.conf"
+  cp -f "${VVV_PATH_TO_SITE}/provision/vvv-nginx-default.conf" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"
+fi
 
 date_time=$(cat /vagrant/provisioned_at)
 logfolder="/var/log/provisioners/${date_time}"
 logfile="${logfolder}/provisioner-${VVV_SITE_NAME}-grunt.log"
 
 # Install and configure the latest stable version of WordPress
+echo " * Checking for WordPress Installs"
 if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/src/wp-load.php" ]]; then
   echo " * Checking out WordPress trunk. See https://develop.svn.wordpress.org/trunk"
   noroot svn checkout "https://develop.svn.wordpress.org/trunk/" "${VVV_PATH_TO_SITE}/public_html"
   cd "${VVV_PATH_TO_SITE}/public_html"
-  echo " * Running npm install"
+  echo " * Running npm install after svn checkout"
   noroot npm install --no-optional
+  echo " * Finished npm install"
 else
   cd "${VVV_PATH_TO_SITE}/public_html"
   echo " * Updating WordPress trunk. See https://develop.svn.wordpress.org/trunk"
@@ -50,14 +61,17 @@ else
       echo " * Skipped auto git pull on develop.git.wordpress.org since you aren't on the master branch"
     fi
   fi
-  echo " * Running npm install"
+  echo " * Running npm install after svn up/git pull"
   # Grunt can crash because doesn't find a folder, the workaround is remove the node_modules folder and download all the dependencies again.
   # We create a file with the stderr output of NPM to check if there are errors, if yes we remove the folder and try again npm install.
   noroot npm install --no-optional &> /tmp/dev-npm.txt
+  echo " * Checking npm install result"
   if [ "$(grep -c "^$1" /tmp/dev-npm.txt)" -ge 1 ]; then
+    echo " ! Issues encounteed, removing node modules folder and running npm install again"
     rm -rf node_modules
     noroot npm install --no-optional
   fi
+  echo " * Finished running npm install"
   echo " * Running grunt"
   echo " * Check the Grunt/Webpack output for Trunk at VVV/log/provisioners/${date_time}/provisioner-${VVV_SITE_NAME}-grunt.log"
   noroot grunt > "${logfile}" 2>&1 
@@ -75,7 +89,7 @@ define( 'WP_DEBUG', true );
 define( 'SCRIPT_DEBUG', true );
 PHP
 
-  mv "${VVV_PATH_TO_SITE}/public_html/src/wp-config.php" "${VVV_PATH_TO_SITE}/public_html/wp-config.php"
+  noroot mv "${VVV_PATH_TO_SITE}/public_html/src/wp-config.php" "${VVV_PATH_TO_SITE}/public_html/wp-config.php"
 fi
 
 if ! $(noroot wp core is-installed --path="${VVV_PATH_TO_SITE}/public_html/src"); then
@@ -99,8 +113,10 @@ if [[ ! -d "${VVV_PATH_TO_SITE}/public_html" ]]; then
   cd "${VVV_PATH_TO_SITE}/public_html/tests/phpunit/data/plugins/"
   if [[ -e 'wordpress-importer/.svn' ]]; then
     cd 'wordpress-importer'
+    echo " * Running svn up on WP importer"
     noroot svn up
   else
+    echo " * Running svn checkout for WP importer"
     noroot svn checkout https://plugins.svn.wordpress.org/wordpress-importer/tags/0.6.3/ wordpress-importer
   fi
   cd "${VVV_PATH_TO_SITE}"
@@ -116,14 +132,5 @@ if [[ ! -d "${VVV_PATH_TO_SITE}/public_html/build" ]]; then
 fi
 echo " * Checking mu-plugins folder"
 noroot mkdir -p "${VVV_PATH_TO_SITE}/public_html/src/wp-content/mu-plugins" "${VVV_PATH_TO_SITE}/public_html/build/wp-content/mu-plugins"
-
-echo " * Copying the sites Nginx config template"
-if [ -f "${VVV_PATH_TO_SITE}/provision/vvv-nginx-custom.conf" ]; then
-  echo " * A vvv-nginx-custom.conf file was found"
-  cp -f "${VVV_PATH_TO_SITE}/provision/vvv-nginx-custom.conf" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"
-else
-  echo " * Using the default vvv-nginx-default.conf, to customize, create a vvv-nginx-custom.conf"
-  cp -f "${VVV_PATH_TO_SITE}/provision/vvv-nginx-default.conf" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"
-fi
 
 echo " * Custom site template develop provisioner completed, WP will be served from the build folder"
