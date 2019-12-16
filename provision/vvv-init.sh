@@ -2,7 +2,10 @@
 
 set -eo pipefail
 
-echo " * Custom Site Template Develop Provisioner - use this template for WP Core development. For client work, use the custom-site-template instead"
+echo " * Custom Site Template Develop Provisioner"
+echo "   - This template is great for contributing to WordPress Core!"
+echo "   - Not so much for building themes and plugins, or agency/client work"
+echo "   - For client/theme/plugin work, use the custom-site-template instead"
 
 DOMAIN=$(get_primary_host "${VVV_SITE_NAME}".test)
 SITE_TITLE=$(get_config_value 'site_title' "${DOMAIN}")
@@ -12,9 +15,9 @@ DB_NAME=${DB_NAME//[\\\/\.\<\>\:\"\'\|\?\!\*-]/}
 
 # Make a database, if we don't already have one
 echo -e " * Creating database '${DB_NAME}' (if it's not already there)"
-mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS ${DB_NAME}"
+mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\`"
 echo -e " * Granting the wp user priviledges to the '${DB_NAME}' database"
-mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO wp@localhost IDENTIFIED BY 'wp';"
+mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO wp@localhost IDENTIFIED BY 'wp';"
 echo -e " * DB operations done."
 
 echo " * Setting up the log subfolder for Nginx logs"
@@ -36,7 +39,7 @@ fi
 
 date_time=$(cat /vagrant/provisioned_at)
 logfolder="/var/log/provisioners/${date_time}"
-logfile="${logfolder}/provisioner-${VVV_SITE_NAME}-grunt.log"
+gruntlogfile="${logfolder}/provisioner-${VVV_SITE_NAME}-grunt.log"
 
 # Install and configure the latest stable version of WordPress
 echo " * Checking for WordPress Installs"
@@ -55,7 +58,7 @@ else
     noroot svn up
   else
     if [[ $(noroot git rev-parse --abbrev-ref HEAD) == 'master' ]]; then
-      echo "running git pull --no-edit git://develop.git.wordpress.org/ master"
+      echo " * Running git pull --no-edit git://develop.git.wordpress.org/ master"
       noroot git pull --no-edit git://develop.git.wordpress.org/ master
     else
       echo " * Skipped auto git pull on develop.git.wordpress.org since you aren't on the master branch"
@@ -67,17 +70,24 @@ else
   noroot npm install --no-optional &> /tmp/dev-npm.txt
   echo " * Checking npm install result"
   if [ "$(grep -c "^$1" /tmp/dev-npm.txt)" -ge 1 ]; then
-    echo " ! Issues encounteed, removing node modules folder and running npm install again"
+    echo " ! Issues encounteed, here's the output:"
+    cat /tmp/dev-npm.txt
+    rm /tmp/dev-npm.txt
+    echo " * Removing the node modules folder"
     rm -rf node_modules
+    echo " * Clearing npm cache"
+    noroot npm cache clean --force
+    echo " * Running npm install again"
     noroot npm install --no-optional
+    echo " * Completed npm install command, check output for issues"
   fi
   echo " * Finished running npm install"
   echo " * Running grunt"
   echo " * Check the Grunt/Webpack output for Trunk at VVV/log/provisioners/${date_time}/provisioner-${VVV_SITE_NAME}-grunt.log"
-  noroot grunt > "${logfile}" 2>&1 
+  noroot grunt > "${gruntlogfile}" 2>&1 
   if [ $? -ne 0 ]; then
-     echo " ! Grunt exited with an error, last 10 lines of log:"
-     tail -10 "${logfile}"
+     echo " ! Grunt exited with an error, these are the last 20 lines of the log:"
+     tail -20 "${gruntlogfile}"
   fi
 fi
 
@@ -127,10 +137,14 @@ if [[ ! -d "${VVV_PATH_TO_SITE}/public_html/build" ]]; then
   echo " * Initializing grunt... This may take a few moments."
   cd "${VVV_PATH_TO_SITE}/public_html/"
   echo " * Check the Grunt/Webpack output for Trunk Build at VVV/log/provisioners/${date_time}/provisioner-${NAME}-grunt.log"
-  noroot grunt > "${logfile}" 2>&1 
+  noroot grunt > "${gruntlogfile}" 2>&1 
+  if [ $? -ne 0 ]; then
+     echo " ! Grunt exited with an error, these are the last 20 lines of the log:"
+     tail -20 "${gruntlogfile}"
+  fi
   echo " * Grunt initialized."
 fi
 echo " * Checking mu-plugins folder"
 noroot mkdir -p "${VVV_PATH_TO_SITE}/public_html/src/wp-content/mu-plugins" "${VVV_PATH_TO_SITE}/public_html/build/wp-content/mu-plugins"
 
-echo " * Custom site template develop provisioner completed, WP will be served from the build folder"
+echo " * Custom site template develop provisioner completed, WP will be served from the build folder, don't forget to rebuild after changes to src"
