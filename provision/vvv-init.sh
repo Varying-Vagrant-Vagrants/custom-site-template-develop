@@ -20,10 +20,11 @@ try_npm_install() {
     noroot npm install --no-optional
     echo " * Completed npm install command, check output for issues"
   fi
-  echo " * Finished running npm install"
+    echo " * Finished running npm install"
 }
 
-verify_grunt_exec() {
+try_grunt_build() {
+  echo " * Running grunt"
   echo " * Check the Grunt/Webpack output for Trunk Build at VVV/log/provisioners/${date_time}/provisioner-${NAME}-grunt.log"
   noroot grunt > "${gruntlogfile}" 2>&1 
   if [ $? -ne 0 ]; then
@@ -72,7 +73,7 @@ logfolder="/var/log/provisioners/${date_time}"
 gruntlogfile="${logfolder}/provisioner-${VVV_SITE_NAME}-grunt.log"
 
 # Install and configure the latest stable version of WordPress
-echo " * Checking for WordPress SVN Installs"
+echo " * Checking for WordPress Installs"
 if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/.svn" ]] && [[ ! -f "${VVV_PATH_TO_SITE}/public_html/.git" ]]; then
   echo " * Checking out WordPress trunk. See https://develop.svn.wordpress.org/trunk"
   noroot svn checkout "https://develop.svn.wordpress.org/trunk/" "${VVV_PATH_TO_SITE}/public_html"
@@ -97,8 +98,7 @@ fi
     
 cd "${VVV_PATH_TO_SITE}/public_html"
 try_npm_install
-echo " * Running grunt"
-verify_grunt_exec
+try_grunt_build
 
 if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/wp-config.php" ]]; then
   cd "${VVV_PATH_TO_SITE}/public_html"
