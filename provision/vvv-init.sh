@@ -20,7 +20,7 @@ try_npm_install() {
     noroot npm install --no-optional
     echo " * Completed npm install command, check output for issues"
   fi
-    echo " * Finished running npm install"
+  echo " * Finished running npm install"
 }
 
 try_grunt_build() {
@@ -88,11 +88,11 @@ fi
 
 if [[ -f "${VVV_PATH_TO_SITE}/public_html/.git" ]]; then
     if [[ $(noroot git rev-parse --abbrev-ref HEAD) == 'master' ]]; then
-    echo " * Running git pull --no-edit git://develop.git.wordpress.org/ master"
-    noroot git pull --no-edit git://develop.git.wordpress.org/ master
+      echo " * Running git pull --no-edit git://develop.git.wordpress.org/ master"
+      noroot git pull --no-edit git://develop.git.wordpress.org/ master
     else
-    echo " * Skipped auto git pull on develop.git.wordpress.org since you aren't on the master branch"
-    git fetch --all
+      echo " * Skipped auto git pull on develop.git.wordpress.org since you aren't on the master branch"
+      git fetch --all
     fi
 fi
     
