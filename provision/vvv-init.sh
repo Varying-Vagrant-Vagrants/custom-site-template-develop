@@ -145,7 +145,7 @@ echo " * Checking for WordPress build"
 if [[ ! -d "${VVV_PATH_TO_SITE}/public_html/build" ]]; then
   echo " * Initializing grunt... This may take a few moments."
   cd "${VVV_PATH_TO_SITE}/public_html/"
-  verify_grunt_exec
+  try_grunt_build
   echo " * Grunt initialized."
 fi
 
