@@ -17,7 +17,7 @@ try_npm_install() {
     echo " * Clearing npm cache"
     noroot npm cache clean --force &> /dev/null
     echo " * Running npm install again"
-    noroot npm install --no-optional
+    noroot npm install --no-optional &> /tmp/dev-npm.txt
     echo " * Completed npm install command, check output for issues"
   fi
   echo " * Finished running npm install"
