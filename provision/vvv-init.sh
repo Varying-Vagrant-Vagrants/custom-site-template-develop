@@ -15,7 +15,7 @@ try_npm_install() {
     echo " * Removing the node modules folder"
     rm -rf node_modules
     echo " * Clearing npm cache"
-    noroot npm cache clean --force
+    noroot npm cache clean --force &> /dev/null
     echo " * Running npm install again"
     noroot npm install --no-optional
     echo " * Completed npm install command, check output for issues"
