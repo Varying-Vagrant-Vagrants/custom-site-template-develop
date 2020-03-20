@@ -28,7 +28,7 @@ try_grunt_build() {
   logfolder="/var/log/provisioners/${date_time}"
   gruntlogfile="${logfolder}/provisioner-${VVV_SITE_NAME}-grunt.log"
   echo " * Running grunt"
-  echo " * Check the Grunt/Webpack output for Trunk Build at VVV/log/provisioners/${date_time}/provisioner-${NAME}-grunt.log"
+  echo " * Check the Grunt/Webpack output for Trunk Build at VVV/log/provisioners/${date_time}/provisioner-${VVV_SITE_NAME}-grunt.log"
   noroot grunt > "${gruntlogfile}" 2>&1 
   if [ $? -ne 0 ]; then
      echo " ! Grunt exited with an error, these are the last 20 lines of the log:"
