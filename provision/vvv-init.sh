@@ -24,6 +24,9 @@ try_npm_install() {
 }
 
 try_grunt_build() {
+  date_time=$(cat /vagrant/provisioned_at)
+  logfolder="/var/log/provisioners/${date_time}"
+  gruntlogfile="${logfolder}/provisioner-${VVV_SITE_NAME}-grunt.log"
   echo " * Running grunt"
   echo " * Check the Grunt/Webpack output for Trunk Build at VVV/log/provisioners/${date_time}/provisioner-${NAME}-grunt.log"
   noroot grunt > "${gruntlogfile}" 2>&1 
@@ -67,10 +70,6 @@ else
   echo " * Using the default vvv-nginx-default.conf, to customize, create a vvv-nginx-custom.conf"
   cp -f "${VVV_PATH_TO_SITE}/provision/vvv-nginx-default.conf" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"
 fi
-
-date_time=$(cat /vagrant/provisioned_at)
-logfolder="/var/log/provisioners/${date_time}"
-gruntlogfile="${logfolder}/provisioner-${VVV_SITE_NAME}-grunt.log"
 
 # Install and configure the latest stable version of WordPress
 echo " * Checking for WordPress Installs"
