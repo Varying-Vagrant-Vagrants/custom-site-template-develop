@@ -6,12 +6,10 @@ try_npm_install() {
   echo " * Running npm install after svn up/git pull"
   # Grunt can crash because doesn't find a folder, the workaround is remove the node_modules folder and download all the dependencies again.
   # We create a file with the stderr output of NPM to check if there are errors, if yes we remove the folder and try again npm install.
-  noroot npm install --no-optional &> /tmp/dev-npm.txt
+  noroot npm install --no-optional
   echo " * Checking npm install result"
-  if [ "$(grep -c "^$1" /tmp/dev-npm.txt)" -ge 1 ]; then
+  if [ $? -eq 0 ]; then
     echo " ! Issues encounteed, here's the output:"
-    cat /tmp/dev-npm.txt
-    rm /tmp/dev-npm.txt
     echo " * Removing the node modules folder"
     rm -rf node_modules
     echo " * Clearing npm cache"
