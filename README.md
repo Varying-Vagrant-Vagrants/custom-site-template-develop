@@ -14,6 +14,16 @@ The supported environments are:
 - A subdomain multisite
 - A subdirectory multisite
 
+## Switching from SVN to Git
+
+```shell
+vagrant ssh
+cd /srv/www/[wordpress-trunk] # the folder name 
+./bin/develop_git
+```
+
+Running this command will convert an svn based checkout to git and will require some time to run.
+
 ## Configuration
 
 ### The Minimum Required Configuration
