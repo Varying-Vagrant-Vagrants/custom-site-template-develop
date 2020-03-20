@@ -20,7 +20,7 @@ The supported environments are:
   cd /srv/www/[wordpress-trunk] # the folder name 
   ./bin/develop_git
   
-Run this commands let you to convert from svn to git and will require some time to download everything.
+Running this command will convert am svn based checkout to git and will require some time to run.
 
 ## Configuration
 
