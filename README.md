@@ -14,7 +14,7 @@ The supported environments are:
 - A subdomain multisite
 - A subdirectory multisite
 
-## Convert code from SVN to Git
+## Switching from SVN to Git
 
   vagrant ssh
   cd /srv/www/[wordpress-trunk] # the folder name 
