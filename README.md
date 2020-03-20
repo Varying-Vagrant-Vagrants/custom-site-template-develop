@@ -22,7 +22,7 @@ cd /srv/www/[wordpress-trunk] # the folder name
 ./bin/develop_git
 ```
 
-Running this command will convert am svn based checkout to git and will require some time to run.
+Running this command will convert an svn based checkout to git and will require some time to run.
 
 ## Configuration
 
