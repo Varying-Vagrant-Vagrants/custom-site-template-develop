@@ -14,6 +14,14 @@ The supported environments are:
 - A subdomain multisite
 - A subdirectory multisite
 
+## Convert code from SVN to Git
+
+  vagrant ssh
+  cd /srv/www/[wordpress-trunk] # the folder name 
+  ./bin/develop_git
+  
+Run this commands let you to convert from svn to git and will require some time to download everything.
+
 ## Configuration
 
 ### The Minimum Required Configuration
