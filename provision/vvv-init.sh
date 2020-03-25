@@ -7,7 +7,7 @@ try_npm_install() {
   # Grunt can crash because doesn't find a folder, the workaround is remove the node_modules folder and download all the dependencies again.
   npm_config_loglevel=error noroot npm install --no-optional
   echo " * Checking npm install result"
-  if [ $? -eq 0 ]; then
+  if [ $? -eq 1 ]; then
     echo " ! Issues encounteed, here's the output:"
     echo " * Removing the node modules folder"
     rm -rf node_modules
