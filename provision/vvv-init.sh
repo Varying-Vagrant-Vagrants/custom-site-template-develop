@@ -94,7 +94,7 @@ fi
 if [[ "${VCS}" = "git" ]]; then
     if [[ ! -e .git ]]; then
         echo " * Checking out WordPress trunk. See https://develop.git.wordpress.org/"
-        noroot git clone git://develop.git.wordpress.org/
+        noroot git clone git://develop.git.wordpress.org/ .
     fi
     if [[ $(noroot git rev-parse --abbrev-ref HEAD) == 'master' ]]; then
       echo " * Running git pull --no-edit git://develop.git.wordpress.org/ master"
