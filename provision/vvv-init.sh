@@ -5,7 +5,7 @@ set -eo pipefail
 try_npm_install() {
   echo " * Running npm install after svn up/git pull"
   # Grunt can crash because doesn't find a folder, the workaround is remove the node_modules folder and download all the dependencies again.
-  noroot npm install --no-optional &> /dev/null
+  npm_config_loglevel=error noroot npm install --no-optional
   echo " * Checking npm install result"
   if [ $? -eq 0 ]; then
     echo " ! Issues encounteed, here's the output:"
@@ -14,7 +14,7 @@ try_npm_install() {
     echo " * Clearing npm cache"
     noroot npm cache clean --force &> /dev/null
     echo " * Running npm install again"
-    noroot npm install --no-optional &> /dev/null
+    npm_config_loglevel=error noroot npm install --no-optional &> /dev/null
     echo " * Completed npm install command, check output for issues"
   fi
   echo " * Finished running npm install"
