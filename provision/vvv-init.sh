@@ -2,6 +2,37 @@
 
 set -eo pipefail
 
+try_npm_install() {
+  echo " * Running npm install after svn up/git pull"
+  # Grunt can crash because doesn't find a folder, the workaround is remove the node_modules folder and download all the dependencies again.
+  npm_config_loglevel=error noroot npm install --no-optional
+  echo " * Checking npm install result"
+  if [ $? -eq 0 ]; then
+    echo " ! Issues encounteed, here's the output:"
+    echo " * Removing the node modules folder"
+    rm -rf node_modules
+    echo " * Clearing npm cache"
+    noroot npm cache clean --force &> /dev/null
+    echo " * Running npm install again"
+    npm_config_loglevel=error noroot npm install --no-optional &> /dev/null
+    echo " * Completed npm install command, check output for issues"
+  fi
+  echo " * Finished running npm install"
+}
+
+try_grunt_build() {
+  date_time=$(cat /vagrant/provisioned_at)
+  logfolder="/var/log/provisioners/${date_time}"
+  gruntlogfile="${logfolder}/provisioner-${VVV_SITE_NAME}-grunt.log"
+  echo " * Running grunt"
+  echo " * Check the Grunt/Webpack output for Trunk Build at VVV/log/provisioners/${date_time}/provisioner-${VVV_SITE_NAME}-grunt.log"
+  noroot grunt > "${gruntlogfile}" 2>&1 
+  if [ $? -ne 0 ]; then
+     echo " ! Grunt exited with an error, these are the last 20 lines of the log:"
+     tail -20 "${gruntlogfile}"
+  fi
+}
+
 echo " * Custom Site Template Develop Provisioner"
 echo "   - This template is great for contributing to WordPress Core!"
 echo "   - Not so much for building themes and plugins, or agency/client work"
@@ -37,59 +68,46 @@ else
   cp -f "${VVV_PATH_TO_SITE}/provision/vvv-nginx-default.conf" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"
 fi
 
-date_time=$(cat /vagrant/provisioned_at)
-logfolder="/var/log/provisioners/${date_time}"
-gruntlogfile="${logfolder}/provisioner-${VVV_SITE_NAME}-grunt.log"
-
 # Install and configure the latest stable version of WordPress
 echo " * Checking for WordPress Installs"
-if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/src/wp-load.php" ]]; then
-  echo " * Checking out WordPress trunk. See https://develop.svn.wordpress.org/trunk"
-  noroot svn checkout "https://develop.svn.wordpress.org/trunk/" "${VVV_PATH_TO_SITE}/public_html"
-  cd "${VVV_PATH_TO_SITE}/public_html"
-  echo " * Running npm install after svn checkout"
-  noroot npm install --no-optional
-  echo " * Finished npm install"
-else
-  cd "${VVV_PATH_TO_SITE}/public_html"
-  echo " * Updating WordPress trunk. See https://develop.svn.wordpress.org/trunk"
-  if [[ -e .svn ]]; then
+VCS=$(get_config_value 'vcs' '')
+if [[ ! -z "${VCS}" ]]; then
+  if [[ -f "${VVV_PATH_TO_SITE}/public_html/.svn" ]]; then
+    VCS="svn"
+  elif [[ -f "${VVV_PATH_TO_SITE}/public_html/.git" ]]; then
+    VCS="git"
+  fi
+fi
+
+cd "${VVV_PATH_TO_SITE}/public_html"
+if [[ "${VCS}" = "svn" ]]; then
+  if [[ ! -e .svn ]]; then
+    echo " * Checking out WordPress trunk. See https://develop.svn.wordpress.org/trunk"
+    noroot svn checkout "https://develop.svn.wordpress.org/trunk/" "${VVV_PATH_TO_SITE}/public_html"
+  else
+    echo " * Updating WordPress trunk. See https://develop.svn.wordpress.org/trunk"
     echo " * Running svn up"
     noroot svn up
-  else
+  fi
+fi
+
+if [[ "${VCS}" = "git" ]]; then
+    if [[ ! -e .git ]]; then
+        echo " * Checking out WordPress trunk. See https://develop.git.wordpress.org/"
+        noroot git clone git://develop.git.wordpress.org/ .
+    fi
     if [[ $(noroot git rev-parse --abbrev-ref HEAD) == 'master' ]]; then
       echo " * Running git pull --no-edit git://develop.git.wordpress.org/ master"
       noroot git pull --no-edit git://develop.git.wordpress.org/ master
     else
       echo " * Skipped auto git pull on develop.git.wordpress.org since you aren't on the master branch"
+      noroot git fetch --all
     fi
-  fi
-  echo " * Running npm install after svn up/git pull"
-  # Grunt can crash because doesn't find a folder, the workaround is remove the node_modules folder and download all the dependencies again.
-  # We create a file with the stderr output of NPM to check if there are errors, if yes we remove the folder and try again npm install.
-  noroot npm install --no-optional &> /tmp/dev-npm.txt
-  echo " * Checking npm install result"
-  if [ "$(grep -c "^$1" /tmp/dev-npm.txt)" -ge 1 ]; then
-    echo " ! Issues encounteed, here's the output:"
-    cat /tmp/dev-npm.txt
-    rm /tmp/dev-npm.txt
-    echo " * Removing the node modules folder"
-    rm -rf node_modules
-    echo " * Clearing npm cache"
-    noroot npm cache clean --force
-    echo " * Running npm install again"
-    noroot npm install --no-optional
-    echo " * Completed npm install command, check output for issues"
-  fi
-  echo " * Finished running npm install"
-  echo " * Running grunt"
-  echo " * Check the Grunt/Webpack output for Trunk at VVV/log/provisioners/${date_time}/provisioner-${VVV_SITE_NAME}-grunt.log"
-  noroot grunt > "${gruntlogfile}" 2>&1 
-  if [ $? -ne 0 ]; then
-     echo " ! Grunt exited with an error, these are the last 20 lines of the log:"
-     tail -20 "${gruntlogfile}"
-  fi
 fi
+    
+cd "${VVV_PATH_TO_SITE}/public_html"
+try_npm_install
+try_grunt_build
 
 if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/wp-config.php" ]]; then
   cd "${VVV_PATH_TO_SITE}/public_html"
@@ -136,14 +154,10 @@ echo " * Checking for WordPress build"
 if [[ ! -d "${VVV_PATH_TO_SITE}/public_html/build" ]]; then
   echo " * Initializing grunt... This may take a few moments."
   cd "${VVV_PATH_TO_SITE}/public_html/"
-  echo " * Check the Grunt/Webpack output for Trunk Build at VVV/log/provisioners/${date_time}/provisioner-${NAME}-grunt.log"
-  noroot grunt > "${gruntlogfile}" 2>&1 
-  if [ $? -ne 0 ]; then
-     echo " ! Grunt exited with an error, these are the last 20 lines of the log:"
-     tail -20 "${gruntlogfile}"
-  fi
+  try_grunt_build
   echo " * Grunt initialized."
 fi
+
 echo " * Checking mu-plugins folder"
 noroot mkdir -p "${VVV_PATH_TO_SITE}/public_html/src/wp-content/mu-plugins" "${VVV_PATH_TO_SITE}/public_html/build/wp-content/mu-plugins"
 
