@@ -25,6 +25,17 @@ my-site:
     - my-site.test
 ```
 
+This settings will use as default SVN to download WordPress-develop but is possible to switch to git:
+
+```yaml
+my-site:
+  repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template-develop
+  hosts:
+    - my-site.test
+  custom:
+    vcs: git # using 'svn' will force this vcs
+```
+
 | Setting    | Value        |
 |------------|--------------|
 | Domain     | my-site.test |
