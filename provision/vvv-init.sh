@@ -12,7 +12,7 @@ try_npm_install() {
     echo " * Removing the node modules folder"
     rm -rf node_modules
     echo " * Clearing npm cache"
-    noroot npm cache clean --force &> /dev/null
+    npm_config_loglevel=error noroot npm cache clean --force &> /dev/null
     echo " * Running npm install again"
     npm_config_loglevel=error noroot npm install --no-optional &> /dev/null
     echo " * Completed npm install command, check output for issues"
@@ -27,7 +27,7 @@ try_grunt_build() {
   echo " * Running grunt"
   echo " * Check the Grunt/Webpack output for Trunk Build at VVV/log/provisioners/${date_time}/provisioner-${VVV_SITE_NAME}-grunt.log"
   noroot grunt > "${gruntlogfile}" 2>&1 
-  if [ $? -ne 0 ]; then
+  if [ $? -ne 1 ]; then
      echo " ! Grunt exited with an error, these are the last 20 lines of the log:"
      tail -20 "${gruntlogfile}"
   fi
@@ -105,12 +105,10 @@ if [[ "${VCS}" = "git" ]]; then
     fi
 fi
     
-cd "${VVV_PATH_TO_SITE}/public_html"
 try_npm_install
 try_grunt_build
 
 if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/wp-config.php" ]]; then
-  cd "${VVV_PATH_TO_SITE}/public_html"
   echo " * Configuring WordPress trunk..."
   noroot wp core config --dbname="${DB_NAME}" --dbuser=wp --dbpass=wp --quiet --path="${VVV_PATH_TO_SITE}/public_html/src" --extra-php <<PHP
 define( 'WP_DEBUG', true );
