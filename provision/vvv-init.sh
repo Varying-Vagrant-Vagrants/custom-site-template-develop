@@ -71,17 +71,15 @@ fi
 # Install and configure the latest stable version of WordPress
 echo " * Checking for WordPress Installs"
 VCS=$(get_config_value 'vcs' '')
-if [[ $VCS -eq '' ]]; then
-  if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/.svn" ]] && [[ ! -f "${VVV_PATH_TO_SITE}/public_html/.git" ]]; then
-    VCS='svn'
-  fi
-  
-  if [[ -f "${VVV_PATH_TO_SITE}/public_html/.git" ]]; then
-    VCS='git'
+if [[ $VCS -eq "" ]]; then
+  if [[ -f "${VVV_PATH_TO_SITE}/public_html/.svn" ]]; then
+    VCS="svn"
+  elif [[ -f "${VVV_PATH_TO_SITE}/public_html/.git" ]]; then
+    VCS="git"
   fi
 fi
 
-if [[ $VCS -eq 'svn' ]]; then
+if [[ "${VCS}" = "svn" ]]; then
   if [[ ! -e .svn ]]; then
     echo " * Checking out WordPress trunk. See https://develop.svn.wordpress.org/trunk"
     noroot svn checkout "https://develop.svn.wordpress.org/trunk/" "${VVV_PATH_TO_SITE}/public_html"
@@ -93,7 +91,7 @@ if [[ $VCS -eq 'svn' ]]; then
   fi
 fi
 
-if [[ $VCS -eq 'git' ]]; then
+if [[ "${VCS}" = "git" ]]; then
     if [[ $(noroot git rev-parse --abbrev-ref HEAD) == 'master' ]]; then
       echo " * Running git pull --no-edit git://develop.git.wordpress.org/ master"
       noroot git pull --no-edit git://develop.git.wordpress.org/ master
