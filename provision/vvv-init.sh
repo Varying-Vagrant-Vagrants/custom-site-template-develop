@@ -71,7 +71,7 @@ fi
 # Install and configure the latest stable version of WordPress
 echo " * Checking for WordPress Installs"
 VCS=$(get_config_value 'vcs' '')
-if [[ $VCS -eq "" ]]; then
+if [[ ! -z "${VCS}" ]]; then
   if [[ -f "${VVV_PATH_TO_SITE}/public_html/.svn" ]]; then
     VCS="svn"
   elif [[ -f "${VVV_PATH_TO_SITE}/public_html/.git" ]]; then
