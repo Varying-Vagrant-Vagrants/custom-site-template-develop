@@ -71,19 +71,30 @@ fi
 
 # Install and configure the latest stable version of WordPress
 echo " * Checking for WordPress Installs"
-if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/.svn" ]] && [[ ! -f "${VVV_PATH_TO_SITE}/public_html/.git" ]]; then
-  echo " * Checking out WordPress trunk. See https://develop.svn.wordpress.org/trunk"
-  noroot svn checkout "https://develop.svn.wordpress.org/trunk/" "${VVV_PATH_TO_SITE}/public_html"
-else
-  cd "${VVV_PATH_TO_SITE}/public_html"
-  echo " * Updating WordPress trunk. See https://develop.svn.wordpress.org/trunk"
-  if [[ -e .svn ]]; then
+VCS=$(get_config_value 'vcs' '')
+if [[ $VCS -eq '' ]]; then
+  if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/.svn" ]] && [[ ! -f "${VVV_PATH_TO_SITE}/public_html/.git" ]]; then
+    VCS='svn'
+  fi
+  
+  if [[ -f "${VVV_PATH_TO_SITE}/public_html/.git" ]]; then
+    VCS='git'
+  fi
+fi
+
+if [[ $VCS -eq 'svn' ]]; then
+  if [[ ! -e .svn ]]; then
+    echo " * Checking out WordPress trunk. See https://develop.svn.wordpress.org/trunk"
+    noroot svn checkout "https://develop.svn.wordpress.org/trunk/" "${VVV_PATH_TO_SITE}/public_html"
+  else
+    cd "${VVV_PATH_TO_SITE}/public_html"
+    echo " * Updating WordPress trunk. See https://develop.svn.wordpress.org/trunk"
     echo " * Running svn up"
     noroot svn up
   fi
 fi
 
-if [[ -f "${VVV_PATH_TO_SITE}/public_html/.git" ]]; then
+if [[ $VCS -eq 'git' ]]; then
     if [[ $(noroot git rev-parse --abbrev-ref HEAD) == 'master' ]]; then
       echo " * Running git pull --no-edit git://develop.git.wordpress.org/ master"
       noroot git pull --no-edit git://develop.git.wordpress.org/ master
