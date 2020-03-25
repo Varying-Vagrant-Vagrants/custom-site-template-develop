@@ -79,12 +79,12 @@ if [[ ! -z "${VCS}" ]]; then
   fi
 fi
 
+cd "${VVV_PATH_TO_SITE}/public_html"
 if [[ "${VCS}" = "svn" ]]; then
   if [[ ! -e .svn ]]; then
     echo " * Checking out WordPress trunk. See https://develop.svn.wordpress.org/trunk"
     noroot svn checkout "https://develop.svn.wordpress.org/trunk/" "${VVV_PATH_TO_SITE}/public_html"
   else
-    cd "${VVV_PATH_TO_SITE}/public_html"
     echo " * Updating WordPress trunk. See https://develop.svn.wordpress.org/trunk"
     echo " * Running svn up"
     noroot svn up
@@ -92,12 +92,16 @@ if [[ "${VCS}" = "svn" ]]; then
 fi
 
 if [[ "${VCS}" = "git" ]]; then
+    if [[ ! -e .git ]]; then
+        echo " * Checking out WordPress trunk. See https://develop.git.wordpress.org/"
+        noroot git clone git://develop.git.wordpress.org/
+    fi
     if [[ $(noroot git rev-parse --abbrev-ref HEAD) == 'master' ]]; then
       echo " * Running git pull --no-edit git://develop.git.wordpress.org/ master"
       noroot git pull --no-edit git://develop.git.wordpress.org/ master
     else
       echo " * Skipped auto git pull on develop.git.wordpress.org since you aren't on the master branch"
-      git fetch --all
+      noroot git fetch --all
     fi
 fi
     
