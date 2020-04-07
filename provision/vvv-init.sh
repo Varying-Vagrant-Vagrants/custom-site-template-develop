@@ -124,10 +124,6 @@ function try_npm_install() {
 }
 
 function try_grunt_build() {
-  date_time=$(cat /vagrant/provisioned_at)
-  logfolder="/var/log/provisioners/${date_time}"
-  gruntlogfile="${logfolder}/provisioner-${VVV_SITE_NAME}-grunt.log"
-  echo " * Installing Grunt if not present"
   echo " * Running grunt"
   noroot grunt
   if [ $? -ne 1 ]; then
