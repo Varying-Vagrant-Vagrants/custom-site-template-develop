@@ -14,6 +14,8 @@ if [[ ! -z "${VCS}" ]]; then
     VCS="svn"
   elif [[ -f "${VVV_PATH_TO_SITE}/public_html/.git" ]]; then
     VCS="git"
+  else
+    VCS="svn"
   fi
 fi
 
