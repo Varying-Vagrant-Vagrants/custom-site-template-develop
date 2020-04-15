@@ -26,6 +26,15 @@ Running this command will convert an svn based checkout to git and will require 
 
 ## Configuration
 
+### Options
+
+| Key         | Default                    | Description                                                                                       |
+|-------------|----------------------------|---------------------------------------------------------------------------------------------------|
+| `db_name`    | The sites name             | The name of the MySQL database to create and install to                                           |
+| `site_title` | The first host of the site | The title of the site after install                                                               |
+| `vcs`        | `svn`                      | The type of WP checkout to make when first creating the site, valid values are `svn` and `git`    |
+| `wp_type`    | `single`                   | Defines what kind of site gets installed, `subdomain` `subdirectory` or `single` are valid values |
+
 ### The Minimum Required Configuration
 
 ```yaml
