@@ -8,15 +8,21 @@ SITE_TITLE=$(get_config_value 'site_title' "${DOMAIN}")
 WP_TYPE=$(get_config_value 'wp_type' "single")
 DB_NAME=$(get_config_value 'db_name' "${VVV_SITE_NAME}")
 DB_NAME=${DB_NAME//[\\\/\.\<\>\:\"\'\|\?\!\*-]/}
-VCS=$(get_config_value 'vcs' 'svn')
-if [[ ! -z "${VCS}" ]]; then
+VCS=$(get_config_value 'vcs' '')
+if [[ -z "${VCS}" ]]; then
+  echo " * vcs value was not set in the config, checking for existing version control"
   if [[ -f "${VVV_PATH_TO_SITE}/public_html/.svn" ]]; then
+    echo " * A .svn folder was found, using svn"
     VCS="svn"
   elif [[ -f "${VVV_PATH_TO_SITE}/public_html/.git" ]]; then
+    echo " * An existing .git folder was found, using git"
     VCS="git"
   else
+    echo " * Defaulting to an svn checkout"
     VCS="svn"
   fi
+else
+  echo " * Using ${VCS} for version control"
 fi
 
 # -------------------------------------------------------
