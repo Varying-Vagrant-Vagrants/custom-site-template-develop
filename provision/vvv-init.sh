@@ -167,7 +167,7 @@ prepare_nginx_conf
 echo " * Checking for WordPress Installs"
 
 cd "${VVV_PATH_TO_SITE}/public_html"
-if [[ "${VCS}" -eq "svn" ]]; then
+if [[ "${VCS}" == "svn" ]]; then
   handle_svn_wp
 else
   handle_git_wp
