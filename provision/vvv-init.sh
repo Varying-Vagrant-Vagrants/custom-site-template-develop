@@ -2,7 +2,6 @@
 
 set -eo pipefail
 
-
 DOMAIN=$(get_primary_host "${VVV_SITE_NAME}".test)
 SITE_TITLE=$(get_config_value 'site_title' "${DOMAIN}")
 WP_TYPE=$(get_config_value 'wp_type' "single")
@@ -168,7 +167,7 @@ prepare_nginx_conf
 echo " * Checking for WordPress Installs"
 
 cd "${VVV_PATH_TO_SITE}/public_html"
-if [[ "${VCS}" = "svn" ]]; then
+if [[ "${VCS}" -eq "svn" ]]; then
   handle_svn_wp
 else
   handle_git_wp
