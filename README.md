@@ -44,23 +44,45 @@ my-site:
     - my-site.test
 ```
 
-This settings will use as default SVN to download WordPress-develop but is possible to switch to git:
+This settings will use as default SVN to download WordPress-develop but it is possible to switch to git:
 
-```yaml
+<table>
+<thead>
+  <tr>
+    <th>Site in <code>config.yml</code></th>
+    <th>Setting</th>
+    <th>Value</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td rowspan="4">
+<pre lang="yaml">
 my-site:
   repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template-develop
   hosts:
     - my-site.test
   custom:
     vcs: git # using 'svn' will force this vcs
-```
-
-| Setting    | Value        |
-|------------|--------------|
-| Domain     | my-site.test |
-| Site Title | my-site.test |
-| DB Name    | my-site      |
-| Site Type  | Single       |
+</pre>
+    </td>
+    <td>Domain</td>
+    <td>my-site.test</td>
+  </tr>
+  <tr>
+    <td>Site Title</td>
+    <td>my-site.test</td>
+  </tr>
+  <tr>
+    <td>DB Name</td>
+    <td>my-site</td>
+  </tr>
+  <tr>
+    <td>Site Type</td>
+    <td>Single</td>
+  </tr>
+</tbody>
+</table>
 
 ### WordPress Multisite with Subdomains
 
