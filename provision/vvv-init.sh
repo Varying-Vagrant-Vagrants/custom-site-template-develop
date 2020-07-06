@@ -10,7 +10,7 @@ DB_NAME=${DB_NAME//[\\\/\.\<\>\:\"\'\|\?\!\*-]/}
 VCS=$(get_config_value 'vcs' '')
 
 if [[ -f "${VVV_PATH_TO_SITE}/public_html/.svn" && $VCS == "git" ]] || [[ "${VVV_PATH_TO_SITE}/public_html/.git" && $VCS == "svn" ]]; then
-  echo " * VCS doesn't match an existing repo, probably you set a different VCS compraed to the one used by this template"
+  echo " * VCS doesn't match an existing repo, probably you set a different VCS compared to the one used by this template"
 fi
 
 if [[ -z "${VCS}" ]]; then
