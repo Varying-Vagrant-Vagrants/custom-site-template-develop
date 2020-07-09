@@ -1,8 +1,8 @@
 # VVV Custom site template (WP Core development)
 
-For when you just need to work on WordPress Core itself. Great for contributor days, Trac tickets, etc
+This site template is a great way to test the bleeding edge versions of WordPress, or contribute to development of WordPress core. Ideal for contributor days, Trac tickets, etc
 
-For general WP work such as theme building or plugin development, use the normal site template instead.
+For general WP work such as theme building or plugin development, use the normal custom site template instead. Only use this if you want the bleeding edge trunk version of WordPress.
 
 ## Overview
 
@@ -13,6 +13,10 @@ The supported environments are:
 - A single site
 - A subdomain multisite
 - A subdirectory multisite
+
+## Pulling In Updates
+
+This template will attempt to update on provision, but if that fails, you can enter the `public_html` folder and manually update. This can be done using `svn up` if SVN is used, and `git pull` if git is used. GUI tools such as TortoiseSVN, Visual Studio Code, and other GUIs, can be used to update the folder too.
 
 ## Switching from SVN to Git
 
