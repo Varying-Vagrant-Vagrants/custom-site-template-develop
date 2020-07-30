@@ -9,7 +9,7 @@ DB_NAME=$(get_config_value 'db_name' "${VVV_SITE_NAME}")
 DB_NAME=${DB_NAME//[\\\/\.\<\>\:\"\'\|\?\!\*-]/}
 VCS=$(get_config_value 'vcs' '')
 
-if [[ -f "${VVV_PATH_TO_SITE}/public_html/.svn" && $VCS == "git" ]] || [[ "${VVV_PATH_TO_SITE}/public_html/.git" && $VCS == "svn" ]]; then
+if [[ -f "${VVV_PATH_TO_SITE}/public_html/.svn" && "${VCS}" == "git" ]] || [[ "${VVV_PATH_TO_SITE}/public_html/.git" && "${VCS}" == "svn" ]]; then
   echo " * Warning: The VCS is set to ${VCS} but this doesn't match the existing repo, you need to manually migrate from svn to git or vice versa, VVV won't do it automatically to avoid data loss"
 fi
 
