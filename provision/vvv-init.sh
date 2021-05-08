@@ -35,8 +35,13 @@ function setup_database() {
   # Make a database, if we don't already have one
   echo -e " * Creating database '${DB_NAME}' (if it's not already there)"
   mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\`"
-  echo -e " * Granting the wp user priviledges to the '${DB_NAME}' database"
+
+  echo -e " * Creating test database '${DB_NAME}_tests' (if it's not already there)"
+  mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS \`${DB_NAME}_tests\`"
+
+  echo -e " * Granting the wp user priviledges to the '${DB_NAME}' and  '${DB_NAME}_tests' database"
   mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO wp@localhost IDENTIFIED BY 'wp';"
+  mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON \`${DB_NAME}_tests\`.* TO wp@localhost IDENTIFIED BY 'wp';"
   echo -e " * DB operations done."
 }
 
