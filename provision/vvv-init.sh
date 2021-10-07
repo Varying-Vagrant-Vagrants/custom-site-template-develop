@@ -189,7 +189,7 @@ maybe_install_wp
 check_for_wp_importer
 
 echo " * Checking for WordPress build"
-if [[ ! -d "${VVV_PATH_TO_SITE}/public_html/build" ]]; then
+if [[ ! -d "${VVV_PATH_TO_SITE}/public_html/src" ]]; then
   echo " * Initializing grunt... This may take a few moments."
   cd "${VVV_PATH_TO_SITE}/public_html/"
   try_grunt_build
