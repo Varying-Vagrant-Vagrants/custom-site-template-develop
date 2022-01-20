@@ -151,7 +151,7 @@ function check_for_wp_importer() {
       noroot svn up
     else
       echo " * Running svn checkout for WP importer"
-      noroot svn checkout https://plugins.svn.wordpress.org/wordpress-importer/tags/0.6.3/ wordpress-importer
+      noroot svn checkout https://plugins.svn.wordpress.org/wordpress-importer/tags/0.7/ wordpress-importer
     fi
     cd "${VVV_PATH_TO_SITE}"
   fi
