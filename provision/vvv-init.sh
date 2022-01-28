@@ -88,7 +88,7 @@ function handle_git_wp() {
 
 function configure_wp() {
   echo " * Configuring WordPress trunk..."
-  noroot wp config create --dbname="${DB_NAME}" --dbprefix="${DB_PREFIX}" --dbuser=wp --dbpass=wp
+  noroot wp config create --dbname="${DB_NAME}" --dbprefix="${DB_PREFIX}" --dbuser=wp --dbpass=wp --quiet --path="${VVV_PATH_TO_SITE}/public_html/src"
   noroot wp config set WP_DEBUG true --raw
   noroot wp config set SCRIPT_DEBUG true --raw
 
