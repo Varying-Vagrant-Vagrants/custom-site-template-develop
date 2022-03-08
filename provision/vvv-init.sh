@@ -6,6 +6,7 @@ DOMAIN=$(get_primary_host "${VVV_SITE_NAME}".test)
 SITE_TITLE=$(get_config_value 'site_title' "${DOMAIN}")
 WP_TYPE=$(get_config_value 'wp_type' "single")
 DB_NAME=$(get_config_value 'db_name' "${VVV_SITE_NAME}")
+NPM=$(get_config_value 'npm' "true")
 DB_NAME=${DB_NAME//[\\\/\.\<\>\:\"\'\|\?\!\*-]/}
 VCS=$(get_config_value 'vcs' '')
 
@@ -177,8 +178,10 @@ else
   handle_git_wp
 fi
 
-try_npm_install
-try_grunt_build
+if [[ "${NPM}" == "true" ]]; then
+  try_npm_install
+  try_grunt_build
+fi
 
 if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/wp-config.php" ]]; then
   configure_wp
