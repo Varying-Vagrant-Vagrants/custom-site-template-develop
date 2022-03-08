@@ -177,7 +177,7 @@ if [[ "${VCS}" == "svn" ]]; then
 else
   handle_git_wp
 fi
-echo "${NPM}"
+
 if [[ "${NPM}" == "true" ]]; then
   try_npm_install
   try_grunt_build
