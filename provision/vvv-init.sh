@@ -127,7 +127,7 @@ function try_npm_install() {
     echo " * Clearing npm cache"
     npm_config_loglevel=error noroot npm cache clean --force
     echo " * Running npm install again"
-    npm_config_loglevel=error noroot npm install --no-optional
+    npm_config_loglevel=error noroot npm install --no-optional --force
     echo " * Completed npm install command, check output for issues"
   fi
   echo " * Finished running npm install"
@@ -177,7 +177,7 @@ if [[ "${VCS}" == "svn" ]]; then
 else
   handle_git_wp
 fi
-
+echo "${NPM}"
 if [[ "${NPM}" == "true" ]]; then
   try_npm_install
   try_grunt_build
