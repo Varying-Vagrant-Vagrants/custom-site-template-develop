@@ -209,6 +209,6 @@ echo " * Copy wp-tests-config.php for phpunit"
 cp "/srv/config/wordpress-config/wp-tests-config.php" "${VVV_PATH_TO_SITE}/public_html/wp-tests-config.php"
 
 echo " * Install Composer packages"
-noroot composer update > /dev/null
+noroot composer update --no-ansi --no-progress > /dev/null
 
 echo " * Custom site template develop provisioner completed, WP will be served from the build folder, don't forget to rebuild after changes to src"
