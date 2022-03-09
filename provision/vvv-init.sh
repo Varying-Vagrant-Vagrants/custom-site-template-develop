@@ -181,6 +181,8 @@ fi
 if [[ "${NPM}" == "true" ]]; then
   try_npm_install
   try_grunt_build
+else
+  echo ' * NPM package installation ignored'
 fi
 
 if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/wp-config.php" ]]; then
