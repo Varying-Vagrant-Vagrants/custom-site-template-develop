@@ -192,15 +192,23 @@ fi
 maybe_install_wp
 check_for_wp_importer
 
-echo " * Checking for WordPress build"
-if [[ ! -d "${VVV_PATH_TO_SITE}/public_html/build" ]]; then
-  echo " * Initializing grunt... This may take a few moments."
-  cd "${VVV_PATH_TO_SITE}/public_html/"
-  try_grunt_build
-  echo " * Grunt initialized."
+if [[ "${NPM}" == "true" ]]; then
+  echo " * Checking for WordPress build"
+  if [[ ! -d "${VVV_PATH_TO_SITE}/public_html/build" ]]; then
+    echo " * Initializing grunt... This may take a few moments."
+    cd "${VVV_PATH_TO_SITE}/public_html/"
+    try_grunt_build
+    echo " * Grunt initialized."
+  fi
 fi
 
 echo " * Checking mu-plugins folder"
 noroot mkdir -p "${VVV_PATH_TO_SITE}/public_html/src/wp-content/mu-plugins" "${VVV_PATH_TO_SITE}/public_html/build/wp-content/mu-plugins"
+
+echo " * Copy wp-tests-config.php for phpunit"
+cp "/srv/config/wordpress-config/wp-tests-config.php" "${VVV_PATH_TO_SITE}/public_html/wp-tests-config.php"
+
+echo " * Install Composer packages"
+noroot composer update > /dev/null
 
 echo " * Custom site template develop provisioner completed, WP will be served from the build folder, don't forget to rebuild after changes to src"
