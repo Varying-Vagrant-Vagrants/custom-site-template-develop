@@ -115,6 +115,10 @@ function maybe_install_wp() {
 }
 
 function try_npm_install() {
+  if command -v nvm &> /dev/null; then
+    echo " * Running nvm use"
+    nvm use
+  fi
   echo " * Running npm install after svn up/git pull"
   # Grunt can crash because doesn't find a folder, the workaround is remove the node_modules folder and download all the dependencies again.
   npm_config_loglevel=error noroot npm install --no-optional
@@ -134,9 +138,9 @@ function try_npm_install() {
 
 function try_grunt_build() {
   echo " * Running grunt"
-  noroot grunt
+  noroot npm run grunt
   if [ $? -ne 1 ]; then
-     echo " ! Grunt exited with an error"
+    echo " ! Grunt exited with an error"
   fi
 }
 
