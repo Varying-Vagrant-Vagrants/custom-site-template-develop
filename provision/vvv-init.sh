@@ -136,11 +136,11 @@ function try_npm_install() {
   echo " * Finished running npm install"
 }
 
-function try_grunt_build() {
-  echo " * Running grunt"
-  noroot npm run grunt
+function try_npm_build() {
+  echo " * Running NPM Build"
+  noroot npm run build
   if [ $? -ne 1 ]; then
-    echo " ! Grunt exited with an error"
+    echo " ! npm run build exited with an error"
   fi
 }
 
@@ -182,7 +182,7 @@ else
 fi
 
 try_npm_install
-try_grunt_build
+try_npm_build
 
 if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/wp-config.php" ]]; then
   configure_wp
@@ -193,10 +193,10 @@ check_for_wp_importer
 
 echo " * Checking for WordPress build"
 if [[ ! -d "${VVV_PATH_TO_SITE}/public_html/build" ]]; then
-  echo " * Initializing grunt... This may take a few moments."
+  echo " * Running NPM build... This may take a few moments."
   cd "${VVV_PATH_TO_SITE}/public_html/"
-  try_grunt_build
-  echo " * Grunt initialized."
+  try_npm_build
+  echo " * NPM Build completed."
 fi
 
 echo " * Checking mu-plugins folder"
