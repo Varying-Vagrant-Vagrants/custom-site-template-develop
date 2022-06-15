@@ -121,16 +121,16 @@ function try_npm_install() {
   fi
   echo " * Running npm install after svn up/git pull"
   # Grunt can crash because doesn't find a folder, the workaround is remove the node_modules folder and download all the dependencies again.
-  npm_config_loglevel=error noroot npm install --no-optional
+  npm_config_loglevel=error npm install --no-optional
   echo " * Checking npm install result"
   if [ $? -eq 1 ]; then
     echo " ! Issues encounteed, here's the output:"
     echo " * Removing the node modules folder"
     rm -rf node_modules
     echo " * Clearing npm cache"
-    npm_config_loglevel=error noroot npm cache clean --force
+    npm_config_loglevel=error npm cache clean --force
     echo " * Running npm install again"
-    npm_config_loglevel=error noroot npm install --no-optional
+    npm_config_loglevel=error npm install --no-optional
     echo " * Completed npm install command, check output for issues"
   fi
   echo " * Finished running npm install"
@@ -138,7 +138,11 @@ function try_npm_install() {
 
 function try_npm_build() {
   echo " * Running NPM Build"
-  noroot npm run build
+  if command -v nvm &> /dev/null; then
+    echo " * Running nvm use"
+    nvm use
+  fi
+  npm run build
   if [ $? -ne 1 ]; then
     echo " ! npm run build exited with an error"
   fi
