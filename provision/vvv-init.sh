@@ -116,16 +116,20 @@ function maybe_install_wp() {
 }
 
 function try_npm_install() {
+  if command -v nvm &> /dev/null; then
+    echo " * Running nvm use"
+    nvm use
+  fi
   echo " * Running npm install after svn up/git pull"
   # Grunt can crash because doesn't find a folder, the workaround is remove the node_modules folder and download all the dependencies again.
-  npm_config_loglevel=error noroot npm install --no-optional
+  npm_config_loglevel=error npm install --no-optional
   echo " * Checking npm install result"
   if [ $? -eq 1 ]; then
     echo " ! Issues encounteed, here's the output:"
     echo " * Removing the node modules folder"
     rm -rf node_modules
     echo " * Clearing npm cache"
-    npm_config_loglevel=error noroot npm cache clean --force
+    npm_config_loglevel=error npm cache clean --force
     echo " * Running npm install again"
     npm_config_loglevel=error noroot npm install --no-optional --force
     echo " * Completed npm install command, check output for issues"
@@ -133,11 +137,15 @@ function try_npm_install() {
   echo " * Finished running npm install"
 }
 
-function try_grunt_build() {
-  echo " * Running grunt"
-  noroot grunt
+function try_npm_build() {
+  echo " * Running NPM Build"
+  if command -v nvm &> /dev/null; then
+    echo " * Running nvm use"
+    nvm use
+  fi
+  npm run build
   if [ $? -ne 1 ]; then
-     echo " ! Grunt exited with an error"
+    echo " ! npm run build exited with an error"
   fi
 }
 
@@ -200,7 +208,6 @@ if [[ "${NPM}" == "true" ]]; then
     try_grunt_build
     echo " * Grunt initialized."
   fi
-fi
 
 echo " * Checking mu-plugins folder"
 noroot mkdir -p "${VVV_PATH_TO_SITE}/public_html/src/wp-content/mu-plugins" "${VVV_PATH_TO_SITE}/public_html/build/wp-content/mu-plugins"
