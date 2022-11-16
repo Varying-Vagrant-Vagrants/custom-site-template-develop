@@ -6,6 +6,7 @@ DOMAIN=$(get_primary_host "${VVV_SITE_NAME}".test)
 SITE_TITLE=$(get_config_value 'site_title' "${DOMAIN}")
 WP_TYPE=$(get_config_value 'wp_type' "single")
 DB_NAME=$(get_config_value 'db_name' "${VVV_SITE_NAME}")
+NPM=$(get_config_value 'npm' "true")
 DB_NAME=${DB_NAME//[\\\/\.\<\>\:\"\'\|\?\!\*-]/}
 VCS=$(get_config_value 'vcs' '')
 
@@ -130,7 +131,7 @@ function try_npm_install() {
     echo " * Clearing npm cache"
     npm_config_loglevel=error npm cache clean --force
     echo " * Running npm install again"
-    npm_config_loglevel=error npm install --no-optional
+    npm_config_loglevel=error noroot npm install --no-optional --force
     echo " * Completed npm install command, check output for issues"
   fi
   echo " * Finished running npm install"
@@ -185,8 +186,12 @@ else
   handle_git_wp
 fi
 
-try_npm_install
-try_npm_build
+if [[ "${NPM}" == "true" ]]; then
+  try_npm_install
+  try_grunt_build
+else
+  echo ' * NPM package installation ignored'
+fi
 
 if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/wp-config.php" ]]; then
   configure_wp
@@ -196,14 +201,22 @@ maybe_install_wp
 check_for_wp_importer
 
 echo " * Checking for WordPress build"
-if [[ ! -d "${VVV_PATH_TO_SITE}/public_html/build" ]]; then
-  echo " * Running NPM build... This may take a few moments."
-  cd "${VVV_PATH_TO_SITE}/public_html/"
-  try_npm_build
-  echo " * NPM Build completed."
+if [[ "${NPM}" == "true" ]]; then
+  if [[ ! -d "${VVV_PATH_TO_SITE}/public_html/build" ]]; then
+    echo " * Initializing grunt... This may take a few moments."
+    cd "${VVV_PATH_TO_SITE}/public_html/"
+    try_grunt_build
+    echo " * Grunt initialized."
+  fi
 fi
 
 echo " * Checking mu-plugins folder"
 noroot mkdir -p "${VVV_PATH_TO_SITE}/public_html/src/wp-content/mu-plugins" "${VVV_PATH_TO_SITE}/public_html/build/wp-content/mu-plugins"
+
+echo " * Copy wp-tests-config.php for phpunit"
+cp "/srv/config/wordpress-config/wp-tests-config.php" "${VVV_PATH_TO_SITE}/public_html/wp-tests-config.php"
+
+echo " * Install Composer packages"
+noroot composer update --no-ansi --no-progress > /dev/null
 
 echo " * Custom site template develop provisioner completed, WP will be served from the build folder, don't forget to rebuild after changes to src"
