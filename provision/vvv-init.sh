@@ -200,14 +200,15 @@ fi
 maybe_install_wp
 check_for_wp_importer
 
+echo " * Checking for WordPress build"
 if [[ "${NPM}" == "true" ]]; then
-  echo " * Checking for WordPress build"
   if [[ ! -d "${VVV_PATH_TO_SITE}/public_html/build" ]]; then
     echo " * Initializing grunt... This may take a few moments."
     cd "${VVV_PATH_TO_SITE}/public_html/"
     try_grunt_build
     echo " * Grunt initialized."
   fi
+fi
 
 echo " * Checking mu-plugins folder"
 noroot mkdir -p "${VVV_PATH_TO_SITE}/public_html/src/wp-content/mu-plugins" "${VVV_PATH_TO_SITE}/public_html/build/wp-content/mu-plugins"
