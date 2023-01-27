@@ -125,7 +125,7 @@ function try_npm_install() {
   mkdir -p ./node_modules
   mount --bind ~/wp-develop-node_modules ./node_modules
   # Grunt can crash because doesn't find a folder, the workaround is remove the node_modules folder and download all the dependencies again.
-  npm_config_loglevel=error npm install --no-optional
+  PUPPETEER_SKIP_DOWNLOAD='true' npm_config_loglevel=error npm install --no-optional
   echo " * Checking npm install result"
   if [ $? -eq 1 ]; then
     echo " ! Issues encounteed, here's the output:"
@@ -134,7 +134,7 @@ function try_npm_install() {
     echo " * Clearing npm cache"
     npm_config_loglevel=error npm cache clean --force
     echo " * Running npm install again"
-    npm_config_loglevel=error noroot npm install --no-optional --force
+    PUPPETEER_SKIP_DOWNLOAD='true' npm_config_loglevel=error noroot npm install --no-optional --force
     echo " * Completed npm install command, check output for issues"
   fi
   echo " * Finished running npm install"
