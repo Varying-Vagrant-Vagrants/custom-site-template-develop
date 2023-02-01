@@ -121,11 +121,11 @@ function try_npm_install() {
     nvm use
   fi
   echo " * Running npm install after svn up/git pull"
-  mkdir -p ~/wp-develop-node_modules
-  mkdir -p ./node_modules
-  mount --bind ~/wp-develop-node_modules ./node_modules
+  noroot mkdir -p ~/wp-develop-"${SITE_TITLE}"-node_modules
+  noroot mkdir -p ./node_modules
+  mount --bind ~/wp-develop-"${SITE_TITLE}"-node_modules ./node_modules
   # Grunt can crash because doesn't find a folder, the workaround is remove the node_modules folder and download all the dependencies again.
-  PUPPETEER_SKIP_DOWNLOAD='true' npm_config_loglevel=error npm install --no-optional
+  npm_config_loglevel=error npm install --no-optional
   echo " * Checking npm install result"
   if [ $? -eq 1 ]; then
     echo " ! Issues encounteed, here's the output:"
@@ -134,7 +134,7 @@ function try_npm_install() {
     echo " * Clearing npm cache"
     npm_config_loglevel=error npm cache clean --force
     echo " * Running npm install again"
-    PUPPETEER_SKIP_DOWNLOAD='true' npm_config_loglevel=error noroot npm install --no-optional --force
+    npm_config_loglevel=error noroot npm install --no-optional --force
     echo " * Completed npm install command, check output for issues"
   fi
   echo " * Finished running npm install"
