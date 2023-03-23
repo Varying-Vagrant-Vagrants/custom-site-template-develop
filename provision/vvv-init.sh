@@ -191,7 +191,6 @@ fi
 
 if [[ "${NPM}" == "true" ]]; then
   try_npm_install
-  try_npm_build
 else
   echo ' * NPM package installation ignored'
 fi
