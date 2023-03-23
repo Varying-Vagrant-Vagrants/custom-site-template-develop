@@ -191,7 +191,7 @@ fi
 
 if [[ "${NPM}" == "true" ]]; then
   try_npm_install
-  try_grunt_build
+  try_npm_build
 else
   echo ' * NPM package installation ignored'
 fi
@@ -208,7 +208,7 @@ if [[ "${NPM}" == "true" ]]; then
   if [[ ! -d "${VVV_PATH_TO_SITE}/public_html/build" ]]; then
     echo " * Initializing grunt... This may take a few moments."
     cd "${VVV_PATH_TO_SITE}/public_html/"
-    try_grunt_build
+    try_npm_build
     echo " * Grunt initialized."
   fi
 fi
