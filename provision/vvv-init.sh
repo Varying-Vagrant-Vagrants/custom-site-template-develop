@@ -121,9 +121,9 @@ function try_npm_install() {
     nvm use
   fi
   echo " * Running npm install after svn up/git pull"
-  noroot mkdir -p "~/.vvv/${SITE_TITLE}/wp_develop_node_modules"
+  noroot mkdir -p ~/.vvv/"${SITE_TITLE}"/wp_develop_node_modules
   noroot mkdir -p ./node_modules
-  mount --bind "~/.vvv/${SITE_TITLE}/wp_develop_node_modules" ./node_modules
+  mount --bind ~/.vvv/"${SITE_TITLE}"/wp_develop_node_modules ./node_modules
   # Grunt can crash because doesn't find a folder, the workaround is remove the node_modules folder and download all the dependencies again.
   npm_config_loglevel=error npm install --no-optional
   echo " * Checking npm install result"
