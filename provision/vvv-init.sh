@@ -121,6 +121,9 @@ function try_npm_install() {
     nvm use
   fi
   echo " * Running npm install after svn up/git pull"
+  noroot mkdir -p /home/vagrant/.vvv/"${SITE_TITLE}"/wp_develop_node_modules
+  noroot mkdir -p ./node_modules
+  mount --bind /home/vagrant/.vvv/"${SITE_TITLE}"/wp_develop_node_modules ./node_modules
   # Grunt can crash because doesn't find a folder, the workaround is remove the node_modules folder and download all the dependencies again.
   npm_config_loglevel=error npm install --no-optional
   echo " * Checking npm install result"
@@ -188,7 +191,6 @@ fi
 
 if [[ "${NPM}" == "true" ]]; then
   try_npm_install
-  try_npm_build
 else
   echo ' * NPM package installation ignored'
 fi
@@ -205,7 +207,7 @@ if [[ "${NPM}" == "true" ]]; then
   if [[ ! -d "${VVV_PATH_TO_SITE}/public_html/build" ]]; then
     echo " * Initializing grunt... This may take a few moments."
     cd "${VVV_PATH_TO_SITE}/public_html/"
-    try_grunt_build
+    try_npm_build
     echo " * Grunt initialized."
   fi
 fi
